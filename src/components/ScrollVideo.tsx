@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useRef } from "react";
+import { useScrollScrub } from "@/hooks/useScrollScrub";
 
 type ScrollVideoProps = {
   src: string;
@@ -17,37 +17,14 @@ export function ScrollVideo({
 }: ScrollVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const onLoadedMetadata = () => setIsReady(true);
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    return () => video.removeEventListener("loadedmetadata", onLoadedMetadata);
-  }, [src]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    const video = videoRef.current;
-    if (!container || !video || !isReady) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: container,
-        start: "top top",
-        end: scrollLength,
-        pin: true,
-        scrub: true,
-        onUpdate: (self) => {
-          video.currentTime = self.progress * video.duration;
-        },
-      });
-    }, container);
-
-    return () => ctx.revert();
-  }, [isReady, scrollLength]);
+  useScrollScrub({
+    trigger: containerRef,
+    video: videoRef,
+    start: "top top",
+    end: scrollLength,
+    pin: true,
+  });
 
   return (
     <div ref={containerRef} className={className}>

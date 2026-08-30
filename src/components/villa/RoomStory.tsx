@@ -1,4 +1,8 @@
+"use client";
+
 import type { CSSProperties } from "react";
+import { useRef } from "react";
+import { useScrollScrub } from "@/hooks/useScrollScrub";
 import { Reveal } from "./Reveal";
 
 type RoomStoryProps = {
@@ -27,8 +31,17 @@ export function RoomStory({
   const contentJustify: CSSProperties["justifyContent"] =
     align === "left" ? "flex-start" : "flex-end";
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useScrollScrub({ trigger: sectionRef, video: videoRef });
+
   return (
-    <section id={id} style={{ position: "relative", height: "168vh", background: "#141310" }}>
+    <section
+      id={id}
+      ref={sectionRef}
+      style={{ position: "relative", height: "168vh", background: "#141310" }}
+    >
       <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
         <div
           style={{
@@ -40,11 +53,11 @@ export function RoomStory({
           }}
         />
         <video
+          ref={videoRef}
           src={video}
-          autoPlay
           muted
-          loop
           playsInline
+          preload="auto"
           style={{
             position: "absolute",
             inset: 0,
