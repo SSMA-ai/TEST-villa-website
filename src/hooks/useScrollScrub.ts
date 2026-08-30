@@ -13,6 +13,8 @@ type UseScrollScrubOptions = {
   end?: string;
   /** Whether GSAP should pin `trigger` itself (leave false if it's already CSS `position: sticky`). */
   pin?: boolean;
+  /** Called with 0-1 scroll progress through the trigger on the same rAF-batched tick as the video seek. */
+  onProgress?: (progress: number) => void;
 };
 
 export function useScrollScrub({
@@ -21,6 +23,7 @@ export function useScrollScrub({
   start = "top top",
   end = "bottom bottom",
   pin = false,
+  onProgress,
 }: UseScrollScrubOptions) {
   useEffect(() => {
     const triggerEl = trigger.current;
@@ -54,6 +57,7 @@ export function useScrollScrub({
           if (Math.abs(videoEl.currentTime - targetTime) > 1 / 48) {
             videoEl.currentTime = targetTime;
           }
+          onProgress?.(self.progress);
         },
       });
     };
@@ -68,5 +72,5 @@ export function useScrollScrub({
       videoEl.removeEventListener("loadedmetadata", setup);
       scrollTrigger?.kill();
     };
-  }, [trigger, video, start, end, pin]);
+  }, [trigger, video, start, end, pin, onProgress]);
 }
