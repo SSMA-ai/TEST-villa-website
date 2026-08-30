@@ -1,1 +1,98 @@
 @import "tailwindcss";
+
+:root {
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-jost), "Helvetica Neue", Helvetica, sans-serif;
+
+  --color-cream: #f7f4ef;
+  --color-ink: #1c1a17;
+  --color-gold: #a98a54;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-gold);
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: #e3d9c6;
+}
+
+/* Villa Aurora interactive states (hover/focus treatments from the design) */
+
+a.nav-link:hover {
+  opacity: 1;
+  color: inherit;
+}
+
+a.btn-gold-solid:hover {
+  background: transparent;
+  color: var(--color-gold);
+}
+
+a.btn-hero-primary:hover {
+  background: #ffffff;
+}
+
+a.btn-hero-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.95);
+  color: #ffffff;
+}
+
+.amenity-card:hover {
+  background: #ffffff;
+}
+
+button.cal-nav-btn:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+button.btn-outline-dark:hover {
+  background: var(--color-ink);
+  color: #ffffff;
+}
+
+.field-input:focus {
+  border-bottom-color: var(--color-gold);
+}
+
+button.guest-btn:hover {
+  border-color: var(--color-gold);
+}
+
+button.btn-submit:hover {
+  background: var(--color-gold);
+}
+
+a.footer-link:hover {
+  color: var(--color-gold);
+}
+
+a.directions-link:hover {
+  color: #f7f4ef;
+}
