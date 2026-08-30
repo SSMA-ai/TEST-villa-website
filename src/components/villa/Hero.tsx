@@ -17,7 +17,7 @@ export function Hero() {
         position: "relative",
         width: "100vw",
         maxWidth: "100%",
-        height: "168vh",
+        height: "300vh",
         margin: 0,
         padding: 0,
         background: "#2E2B26",
@@ -28,13 +28,12 @@ export function Hero() {
           position: "sticky",
           top: 0,
           height: "100vh",
-          minHeight: 640,
           overflow: "hidden",
         }}
       >
         <video
           ref={videoRef}
-          src="/videos/hero-aerial.mp4"
+          src="/videos/hero-full.mp4"
           muted
           playsInline
           preload="auto"
