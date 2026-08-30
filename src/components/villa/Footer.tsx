@@ -80,9 +80,6 @@ export function Footer() {
             <a href="#rooms" className="footer-link" style={{ fontSize: 14, fontWeight: 300, color: "rgba(247,244,239,0.78)" }}>
               Rooms
             </a>
-            <a href="#gallery" className="footer-link" style={{ fontSize: 14, fontWeight: 300, color: "rgba(247,244,239,0.78)" }}>
-              Gallery
-            </a>
             <a href="#booking" className="footer-link" style={{ fontSize: 14, fontWeight: 300, color: "rgba(247,244,239,0.78)" }}>
               Reserve
             </a>
