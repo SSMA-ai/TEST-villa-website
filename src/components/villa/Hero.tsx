@@ -1,23 +1,48 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { useScrollScrub } from "@/hooks/useScrollScrub";
 
-const HERO_STAGES = [
+const HERO_STAGES: {
+  heading: string;
+  subtitle: string;
+  position: CSSProperties;
+  align: "left" | "right" | "center";
+  maxWidth: number | string;
+  slideAxis: "x" | "y";
+  /** Signed pixel distance the stage slides in from (and back out to). */
+  slideDistance: number;
+}[] = [
   {
     heading: "Villa Aurora",
     subtitle:
       "A private clifftop estate on the Côte d'Azur — infinity pool, six suites, uninterrupted sea views.",
+    position: { left: "6%", top: "50%" },
+    align: "left",
+    maxWidth: "min(400px, 40vw)",
+    slideAxis: "x",
+    slideDistance: -70,
   },
   {
     heading: "Living, Reimagined",
     subtitle:
       "Floor-to-ceiling glass, oak-beamed ceilings, and a kitchen built for entertaining — all facing the Mediterranean.",
+    position: { right: "6%", top: "50%" },
+    align: "right",
+    maxWidth: "min(400px, 40vw)",
+    slideAxis: "x",
+    slideDistance: 70,
   },
   {
     heading: "Stone, Light, Silence",
     subtitle:
       "A freestanding travertine bath, brass fittings, and a horizon that never leaves your view.",
+    position: { left: "50%", bottom: "12%" },
+    align: "center",
+    maxWidth: "min(560px, 86vw)",
+    slideAxis: "y",
+    slideDistance: 60,
   },
 ];
 
@@ -162,34 +187,26 @@ export function Hero() {
           </div>
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            bottom: "10%",
-            transform: "translateX(-50%)",
-            width: "min(640px, 88%)",
-            height: 210,
-            padding: "0 24px",
-          }}
-        >
-          {HERO_STAGES.map((stage, index) => (
+        {HERO_STAGES.map((stage, index) => {
+          const opacity = stageOpacity(progress, index);
+          // At the start/end of a stage's range opacity is 0, so this is at
+          // full displacement; it eases to 0 offset as opacity reaches 1.
+          const slideOffset = (1 - opacity) * stage.slideDistance;
+          const centering = stage.align === "center" ? "translateX(-50%)" : "translateY(-50%)";
+          const slide =
+            stage.slideAxis === "x" ? `translateX(${slideOffset}px)` : `translateY(${slideOffset}px)`;
+
+          return (
             <div
               key={stage.heading}
               style={{
                 position: "absolute",
-                inset: "0 24px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                padding: "32px 40px",
-                background: "rgba(255,255,255,0.09)",
-                backdropFilter: "blur(20px) saturate(1.2)",
-                WebkitBackdropFilter: "blur(20px) saturate(1.2)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                opacity: stageOpacity(progress, index),
+                ...stage.position,
+                transform: `${centering} ${slide}`,
+                opacity,
+                width: stage.maxWidth,
+                textAlign: stage.align,
+                pointerEvents: "none",
               }}
             >
               <h2
@@ -197,28 +214,29 @@ export function Hero() {
                   margin: 0,
                   fontFamily: "var(--font-display)",
                   fontWeight: 400,
-                  fontSize: "clamp(26px, 3.2vw, 38px)",
+                  fontSize: "clamp(28px, 3.4vw, 44px)",
                   lineHeight: 1.15,
                   color: "#FFFFFF",
+                  textShadow: "0 2px 14px rgba(0,0,0,0.55), 0 10px 44px rgba(0,0,0,0.4)",
                 }}
               >
                 {stage.heading}
               </h2>
               <p
                 style={{
-                  margin: "14px 0 0",
-                  maxWidth: 440,
+                  margin: "16px 0 0",
                   fontSize: 14.5,
                   fontWeight: 300,
                   lineHeight: 1.75,
-                  color: "rgba(255,255,255,0.88)",
+                  color: "rgba(255,255,255,0.92)",
+                  textShadow: "0 1px 10px rgba(0,0,0,0.6), 0 6px 28px rgba(0,0,0,0.4)",
                 }}
               >
                 {stage.subtitle}
               </p>
             </div>
-          ))}
-        </div>
+          );
+        })}
 
         <div
           style={{
