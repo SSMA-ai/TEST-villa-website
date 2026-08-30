@@ -1,4 +1,5 @@
 import { stats } from "@/lib/villa-data";
+import { StatColumn } from "./StatColumn";
 
 export function StatsBar() {
   return (
@@ -12,25 +13,8 @@ export function StatsBar() {
           gridTemplateColumns: "repeat(4, 1fr)",
         }}
       >
-        {stats.map((stat) => (
-          <div
-            key={stat.key}
-            style={{
-              padding: "44px 0 42px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-              borderLeft: "1px solid rgba(247,244,239,0.12)",
-              paddingLeft: 32,
-            }}
-          >
-            <span style={{ fontFamily: "var(--font-display)", fontSize: 34, lineHeight: 1 }}>
-              {stat.value}
-            </span>
-            <span style={{ fontSize: 9.5, letterSpacing: "0.32em", color: "rgba(247,244,239,0.5)" }}>
-              {stat.label}
-            </span>
-          </div>
+        {stats.map((stat, i) => (
+          <StatColumn key={stat.key} stat={stat} delayMs={i * 120} />
         ))}
       </div>
     </section>
