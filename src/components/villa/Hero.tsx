@@ -119,9 +119,9 @@ export function Hero() {
             position: "absolute",
             inset: 0,
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "center",
-            padding: "0 24px",
+            padding: "128px 24px 0",
           }}
         >
           <div style={{ width: "min(720px, 100%)", textAlign: "center" }}>
