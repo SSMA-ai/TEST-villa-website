@@ -43,10 +43,16 @@ export function useScrollScrub({
         start,
         end,
         pin,
+        // scrub batches onUpdate through GSAP's own requestAnimationFrame
+        // ticker rather than firing per raw scroll event.
         scrub: true,
         onUpdate: (self) => {
-          if (videoEl.duration) {
-            videoEl.currentTime = self.progress * videoEl.duration;
+          if (!videoEl.duration) return;
+          const targetTime = self.progress * videoEl.duration;
+          // Skip the seek if the target frame hasn't meaningfully changed
+          // since the last tick — avoids redundant no-op seeks.
+          if (Math.abs(videoEl.currentTime - targetTime) > 1 / 48) {
+            videoEl.currentTime = targetTime;
           }
         },
       });
