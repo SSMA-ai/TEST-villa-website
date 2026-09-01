@@ -97,3 +97,225 @@ a.footer-link:hover {
 a.directions-link:hover {
   color: #f7f4ef;
 }
+
+/* Villa Aurora responsive breakpoints (mobile: max-width 767px).
+   Inline `style` always beats an external stylesheet rule by specificity,
+   so any property that needs to change on mobile is kept OUT of the
+   inline style and set only here, following the same pattern already
+   used above for :hover states. */
+
+/* Header */
+.header-padding-x {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+.desktop-nav {
+  display: flex;
+}
+.header-cta {
+  display: inline-flex;
+}
+.mobile-menu-btn {
+  display: none;
+}
+@media (max-width: 767px) {
+  .header-padding-x {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .desktop-nav,
+  .header-cta {
+    display: none;
+  }
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+}
+
+/* Hero */
+.hero-pin-section {
+  height: 300vh;
+}
+.hero-cta-row {
+  flex-direction: row;
+}
+.scroll-hint {
+  display: flex;
+}
+@media (max-width: 767px) {
+  .hero-pin-section {
+    height: 220vh;
+  }
+  .hero-cta-row {
+    flex-direction: column;
+  }
+  .scroll-hint {
+    display: none;
+  }
+}
+
+/* Section headings */
+.heading-xl {
+  font-size: 44px;
+}
+.heading-lg {
+  font-size: 40px;
+}
+@media (max-width: 767px) {
+  .heading-xl {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+  .heading-lg {
+    font-size: clamp(26px, 7.5vw, 36px);
+  }
+}
+
+/* Section padding */
+.about-section {
+  padding: 148px 48px 130px;
+}
+.roomfeature-section {
+  padding: 110px 48px;
+}
+.amenities-section {
+  padding: 140px 48px 120px;
+}
+.gallery-section {
+  padding: 130px 48px;
+}
+.booking-section {
+  padding: 140px 48px;
+}
+.footer-top {
+  padding: 110px 48px 44px;
+}
+@media (max-width: 767px) {
+  .about-section,
+  .amenities-section,
+  .gallery-section,
+  .booking-section {
+    padding: 96px 24px 72px;
+  }
+  .roomfeature-section {
+    padding: 72px 24px;
+  }
+  .footer-top {
+    padding: 80px 24px 32px;
+  }
+}
+
+/* Grid stacking */
+.about-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 90px;
+}
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+.roomfeature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+.roomfeature-image {
+  order: 0;
+}
+.roomfeature-text {
+  order: 1;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0 48px;
+}
+.section-header-row {
+  display: flex;
+  align-items: flex-end;
+}
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+}
+.booking-panel {
+  padding: 46px 44px 50px;
+}
+@media (max-width: 767px) {
+  .booking-panel {
+    padding: 32px 24px 36px;
+  }
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 0.9fr;
+  gap: 70px;
+}
+.footer-bottom {
+  padding: 26px 48px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+@media (max-width: 767px) {
+  .footer-bottom {
+    padding: 20px 24px 28px;
+  }
+  .about-grid,
+  .roomfeature-grid,
+  .booking-grid,
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .about-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 24px;
+  }
+  .section-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .amenities-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+/* Mobile nav overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #1c1a17;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+

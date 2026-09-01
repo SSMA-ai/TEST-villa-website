@@ -4,11 +4,10 @@ import { Reveal } from "./Reveal";
 export function Amenities() {
   return (
     <section style={{ background: "#F7F4EF" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "140px 48px 120px" }}>
+      <div className="amenities-section" style={{ maxWidth: 1320, margin: "0 auto" }}>
         <Reveal
+          className="section-header-row"
           style={{
-            display: "flex",
-            alignItems: "flex-end",
             justifyContent: "space-between",
             gap: 40,
             paddingBottom: 46,
@@ -20,11 +19,11 @@ export function Amenities() {
               04 — INCLUDED
             </span>
             <h2
+              className="heading-xl"
               style={{
                 margin: "24px 0 0",
                 fontFamily: "var(--font-display)",
                 fontWeight: 400,
-                fontSize: 44,
                 lineHeight: 1.12,
               }}
             >
@@ -37,10 +36,8 @@ export function Amenities() {
         </Reveal>
 
         <div
+          className="amenities-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 1,
             background: "#E3D9C6",
             border: "1px solid #E3D9C6",
             marginTop: 56,

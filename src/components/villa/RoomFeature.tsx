@@ -10,6 +10,7 @@ type RoomFeatureProps = {
   heading: string;
   body: string;
   tags: string[];
+  priority?: boolean;
 };
 
 export function RoomFeature({
@@ -21,28 +22,33 @@ export function RoomFeature({
   heading,
   body,
   tags,
+  priority,
 }: RoomFeatureProps) {
   const imageBlock = (
-    <div style={{ position: "relative", aspectRatio: "4 / 3", overflow: "hidden" }}>
+    <div
+      className="roomfeature-image"
+      style={{ position: "relative", aspectRatio: "4 / 3", overflow: "hidden" }}
+    >
       <Image
         src={image}
         alt={imageAlt}
         fill
-        sizes="(max-width: 900px) 100vw, 50vw"
+        priority={priority}
+        sizes="(max-width: 767px) 100vw, 50vw"
         style={{ objectFit: "cover" }}
       />
     </div>
   );
 
   const textBlock = (
-    <Reveal>
+    <Reveal className="roomfeature-text">
       <span style={{ fontSize: 9.5, letterSpacing: "0.42em", color: "#A98A54" }}>{kicker}</span>
       <h2
+        className="heading-lg"
         style={{
           margin: "22px 0 0",
           fontFamily: "var(--font-display)",
           fontWeight: 400,
-          fontSize: 40,
           lineHeight: 1.15,
           color: "#1C1A17",
         }}
@@ -73,13 +79,10 @@ export function RoomFeature({
   return (
     <section
       id={id}
+      className="roomfeature-section roomfeature-grid"
       style={{
         maxWidth: 1320,
         margin: "0 auto",
-        padding: "110px 48px",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 90,
         alignItems: "center",
       }}
     >

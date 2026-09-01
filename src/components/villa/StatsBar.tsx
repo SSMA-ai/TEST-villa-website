@@ -5,12 +5,10 @@ export function StatsBar() {
   return (
     <section style={{ background: "#1C1A17", color: "#F7F4EF" }}>
       <div
+        className="stats-grid"
         style={{
           maxWidth: 1320,
           margin: "0 auto",
-          padding: "0 48px",
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
         }}
       >
         {stats.map((stat, i) => (

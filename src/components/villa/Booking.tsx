@@ -156,11 +156,10 @@ export function Booking() {
 
   return (
     <section id="booking" style={{ background: "#F7F4EF" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "140px 48px 140px" }}>
+      <div className="booking-section" style={{ maxWidth: 1320, margin: "0 auto" }}>
         <div
+          className="section-header-row"
           style={{
-            display: "flex",
-            alignItems: "flex-end",
             justifyContent: "space-between",
             gap: 40,
             marginBottom: 60,
@@ -171,11 +170,11 @@ export function Booking() {
               06 — RESERVE
             </span>
             <h2
+              className="heading-xl"
               style={{
                 margin: "24px 0 0",
                 fontFamily: "var(--font-display)",
                 fontWeight: 400,
-                fontSize: 44,
                 lineHeight: 1.12,
               }}
             >
@@ -188,15 +187,13 @@ export function Booking() {
         </div>
 
         <div
+          className="booking-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 1,
             background: "#E3D9C6",
             border: "1px solid #E3D9C6",
           }}
         >
-          <div style={{ background: "#FFFFFF", padding: "46px 44px 50px" }}>
+          <div className="booking-panel" style={{ background: "#FFFFFF" }}>
             <div
               style={{
                 display: "flex",
@@ -300,7 +297,7 @@ export function Booking() {
             </div>
           </div>
 
-          <div style={{ background: "#FFFFFF", padding: "46px 44px 50px", display: "flex", flexDirection: "column", gap: 22 }}>
+          <div className="booking-panel" style={{ background: "#FFFFFF", display: "flex", flexDirection: "column", gap: 22 }}>
             {sent ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "40px 0" }}>
                 <span style={{ fontSize: 9.5, letterSpacing: "0.36em", color: "#A98A54" }}>

@@ -9,6 +9,7 @@ type RevealProps = {
   durationMs?: number;
   translateY?: number;
   style?: CSSProperties;
+  className?: string;
 };
 
 export function Reveal({
@@ -17,12 +18,14 @@ export function Reveal({
   durationMs = 1000,
   translateY = 26,
   style,
+  className,
 }: RevealProps) {
   const { ref, revealed } = useReveal<HTMLDivElement>();
 
   return (
     <div
       ref={ref}
+      className={className}
       style={{
         opacity: revealed ? 1 : 0,
         transform: revealed ? "translateY(0)" : `translateY(${translateY}px)`,

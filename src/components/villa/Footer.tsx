@@ -2,13 +2,10 @@ export function Footer() {
   return (
     <footer id="contact" style={{ background: "#1C1A17", color: "#F7F4EF" }}>
       <div
+        className="footer-top footer-grid"
         style={{
           maxWidth: 1320,
           margin: "0 auto",
-          padding: "110px 48px 44px",
-          display: "grid",
-          gridTemplateColumns: "1.1fr 0.9fr 0.9fr",
-          gap: 70,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
@@ -101,14 +98,10 @@ export function Footer() {
         </div>
       </div>
       <div
+        className="footer-bottom"
         style={{
           maxWidth: 1320,
           margin: "0 auto",
-          padding: "26px 48px 40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 24,
           borderTop: "1px solid rgba(247,244,239,0.1)",
         }}
       >

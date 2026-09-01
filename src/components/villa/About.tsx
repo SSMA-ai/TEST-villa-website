@@ -4,13 +4,10 @@ export function About() {
   return (
     <section
       id="about"
+      className="about-section about-grid"
       style={{
         maxWidth: 1320,
         margin: "0 auto",
-        padding: "148px 48px 130px",
-        display: "grid",
-        gridTemplateColumns: "0.85fr 1.15fr",
-        gap: 90,
         alignItems: "start",
       }}
     >
@@ -19,11 +16,11 @@ export function About() {
           01 — THE ESTATE
         </span>
         <h2
+          className="heading-xl"
           style={{
             margin: "26px 0 0",
             fontFamily: "var(--font-display)",
             fontWeight: 400,
-            fontSize: 44,
             lineHeight: 1.12,
           }}
         >
@@ -45,10 +42,8 @@ export function About() {
           gate closes behind one party at a time.
         </p>
         <div
+          className="about-stats-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 28,
             marginTop: 14,
             paddingTop: 30,
             borderTop: "1px solid #E3D9C6",

@@ -4,11 +4,10 @@ import { gallery } from "@/lib/villa-data";
 export function Gallery() {
   return (
     <section id="gallery" style={{ background: "#EFEAE1" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "130px 48px 130px" }}>
+      <div className="gallery-section" style={{ maxWidth: 1320, margin: "0 auto" }}>
         <div
+          className="section-header-row"
           style={{
-            display: "flex",
-            alignItems: "flex-end",
             justifyContent: "space-between",
             gap: 40,
             marginBottom: 52,
@@ -19,11 +18,11 @@ export function Gallery() {
               05 — GALLERY
             </span>
             <h2
+              className="heading-xl"
               style={{
                 margin: "24px 0 0",
                 fontFamily: "var(--font-display)",
                 fontWeight: 400,
-                fontSize: 44,
                 lineHeight: 1.12,
               }}
             >
@@ -31,13 +30,7 @@ export function Gallery() {
             </h2>
           </div>
         </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${gallery.length}, 1fr)`,
-            gap: 18,
-          }}
-        >
+        <div className="gallery-grid">
           {gallery.map((item) => (
             <figure
               key={item.file}
@@ -53,7 +46,7 @@ export function Gallery() {
                 src={item.file}
                 alt={item.label}
                 fill
-                sizes="(max-width: 900px) 100vw, 33vw"
+                sizes="(max-width: 767px) 100vw, 33vw"
                 style={{ objectFit: "cover" }}
               />
               <div

@@ -41,6 +41,11 @@ export function useScrollScrub({
       // frame immediately, instead of showing a blank video before scrolling starts.
       videoEl.currentTime = 0.01;
 
+      // On touch devices, a small amount of GSAP's built-in scrub smoothing
+      // (lag in seconds, rather than 1:1 tracking) absorbs the bursty deltas
+      // touch-momentum scrolling produces, instead of snapping to every one.
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
       scrollTrigger = ScrollTrigger.create({
         trigger: triggerEl,
         start,
@@ -48,7 +53,7 @@ export function useScrollScrub({
         pin,
         // scrub batches onUpdate through GSAP's own requestAnimationFrame
         // ticker rather than firing per raw scroll event.
-        scrub: true,
+        scrub: isMobile ? 0.35 : true,
         onUpdate: (self) => {
           if (!videoEl.duration) return;
           const targetTime = self.progress * videoEl.duration;

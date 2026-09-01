@@ -20,7 +20,7 @@ const HERO_STAGES: {
       "A private clifftop estate on the Côte d'Azur — infinity pool, six suites, uninterrupted sea views.",
     position: { left: "6%", top: "50%" },
     align: "left",
-    maxWidth: "min(400px, 40vw)",
+    maxWidth: "min(400px, 78vw)",
     slideAxis: "x",
     slideDistance: -70,
   },
@@ -30,7 +30,7 @@ const HERO_STAGES: {
       "Floor-to-ceiling glass, oak-beamed ceilings, and a kitchen built for entertaining — all facing the Mediterranean.",
     position: { right: "6%", top: "50%" },
     align: "right",
-    maxWidth: "min(400px, 40vw)",
+    maxWidth: "min(400px, 78vw)",
     slideAxis: "x",
     slideDistance: 70,
   },
@@ -71,11 +71,11 @@ export function Hero() {
     <section
       id="top"
       ref={sectionRef}
+      className="hero-pin-section"
       style={{
         position: "relative",
         width: "100vw",
         maxWidth: "100%",
-        height: "300vh",
         margin: 0,
         padding: 0,
         background: "#2E2B26",
@@ -91,7 +91,6 @@ export function Hero() {
       >
         <video
           ref={videoRef}
-          src="/videos/hero-full.mp4"
           muted
           playsInline
           preload="auto"
@@ -103,7 +102,10 @@ export function Hero() {
             objectFit: "cover",
             backgroundColor: "#2E2B26",
           }}
-        />
+        >
+          <source src="/videos/hero-full-mobile.mp4" media="(max-width: 767px)" />
+          <source src="/videos/hero-full.mp4" />
+        </video>
         <div
           style={{
             position: "absolute",
@@ -147,6 +149,7 @@ export function Hero() {
               <span style={{ width: 34, height: 1, background: "rgba(255,255,255,0.45)" }} />
             </div>
             <div
+              className="hero-cta-row"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -239,12 +242,12 @@ export function Hero() {
         })}
 
         <div
+          className="scroll-hint"
           style={{
             position: "absolute",
             right: 42,
             top: "50%",
             transform: "translateY(-50%)",
-            display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 18,

@@ -19,6 +19,7 @@ export default function Home() {
         image="/images/living-kitchen.jpg"
         imageAlt="Living and kitchen"
         imagePosition="left"
+        priority
         kicker="02 — LIVING & KITCHEN"
         heading="One room, eighteen metres, no walls."
         body="The kitchen is a single block of honed marble facing the sea. Glazing slides fully away, so lunch happens somewhere between inside and the terrace. Seating for twelve, a fireplace for the mistral, and a record player nobody can resist."
