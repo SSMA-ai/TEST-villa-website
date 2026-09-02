@@ -31,12 +31,12 @@ export function useScrollScrub({
     if (!triggerEl || !videoEl) return;
 
     let scrollTrigger: ScrollTrigger | undefined;
+    let cancelled = false;
 
     // Imperative DOM control via ref.current — the intended use of refs, not
     // React state — so these mutations are intentional despite the lint rule.
-    const setup = () => {
-      // eslint-disable-next-line react-hooks/immutability
-      videoEl.pause();
+    const startScrub = () => {
+      if (cancelled) return;
       // A tiny nonzero currentTime forces the browser to decode and paint a
       // frame immediately, instead of showing a blank video before scrolling starts.
       videoEl.currentTime = 0.01;
@@ -67,14 +67,40 @@ export function useScrollScrub({
       });
     };
 
-    if (videoEl.readyState >= 1) {
+    const setup = () => {
+      // Mobile Safari (and possibly others) won't decode/paint any frame in
+      // response to a bare `currentTime` seek until the video has actually
+      // entered the "playing" state once — it just stays black. A muted
+      // video is allowed to autoplay via JS without a user gesture, so
+      // play()-then-pause() "primes" the decoder before scroll takes over.
+      const playResult = videoEl.play();
+      if (playResult && typeof playResult.then === "function") {
+        playResult.then(
+          () => {
+            videoEl.pause();
+            startScrub();
+          },
+          () => {
+            // play() can reject (e.g. blocked); the video was never actually
+            // playing either way, so just proceed.
+            startScrub();
+          }
+        );
+      } else {
+        videoEl.pause();
+        startScrub();
+      }
+    };
+
+    if (videoEl.readyState >= 2) {
       setup();
     } else {
-      videoEl.addEventListener("loadedmetadata", setup, { once: true });
+      videoEl.addEventListener("loadeddata", setup, { once: true });
     }
 
     return () => {
-      videoEl.removeEventListener("loadedmetadata", setup);
+      cancelled = true;
+      videoEl.removeEventListener("loadeddata", setup);
       scrollTrigger?.kill();
     };
   }, [trigger, video, start, end, pin, onProgress]);

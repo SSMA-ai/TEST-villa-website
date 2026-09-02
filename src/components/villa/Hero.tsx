@@ -94,6 +94,7 @@ export function Hero() {
           muted
           playsInline
           preload="auto"
+          poster="/images/hero-poster.jpg"
           style={{
             position: "absolute",
             inset: 0,
