@@ -25,7 +25,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${playfairDisplay.variable} ${jost.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Without JS the preloader could never finish, so don't show it. */}
+        <noscript>
+          <style>{".preloader{display:none}"}</style>
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }

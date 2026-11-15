@@ -15,6 +15,12 @@ type UseScrollScrubOptions = {
   pin?: boolean;
   /** Called with 0-1 scroll progress through the trigger on the same rAF-batched tick as the video seek. */
   onProgress?: (progress: number) => void;
+  /**
+   * Hold off creating the ScrollTrigger until true (e.g. while a preloader
+   * covers the page), so the pin/scrub measurements are taken against the
+   * final, unlocked layout. Defaults to true.
+   */
+  enabled?: boolean;
 };
 
 export function useScrollScrub({
@@ -24,14 +30,30 @@ export function useScrollScrub({
   end = "bottom bottom",
   pin = false,
   onProgress,
+  enabled = true,
 }: UseScrollScrubOptions) {
   useEffect(() => {
+    if (!enabled) return;
     const triggerEl = trigger.current;
     const videoEl = video.current;
     if (!triggerEl || !videoEl) return;
 
     let scrollTrigger: ScrollTrigger | undefined;
     let cancelled = false;
+    // Pin/layout engage on schedule regardless, but actual seeking is held
+    // off until the browser thinks it can play through without further
+    // buffering — on a real network (unlike localhost) a large video isn't
+    // fully downloaded yet when scroll starts, and seeking into unbuffered
+    // ranges just stalls on whatever frame was last decoded. Until ready,
+    // the video holds its primed first frame instead of looking broken.
+    let bufferedEnough = false;
+    let readyTimeout: number | undefined;
+    const markReady = () => {
+      if (bufferedEnough) return;
+      bufferedEnough = true;
+      window.clearTimeout(readyTimeout);
+      videoEl.removeEventListener("canplaythrough", markReady);
+    };
 
     // Imperative DOM control via ref.current — the intended use of refs, not
     // React state — so these mutations are intentional despite the lint rule.
@@ -40,6 +62,15 @@ export function useScrollScrub({
       // A tiny nonzero currentTime forces the browser to decode and paint a
       // frame immediately, instead of showing a blank video before scrolling starts.
       videoEl.currentTime = 0.01;
+
+      if (videoEl.readyState >= 4) {
+        markReady(); // HAVE_ENOUGH_DATA already
+      } else {
+        videoEl.addEventListener("canplaythrough", markReady);
+        // canplaythrough can be inconsistent across browsers/hosts for large
+        // files — don't leave scrubbing permanently frozen if it never fires.
+        readyTimeout = window.setTimeout(markReady, 6000);
+      }
 
       // On touch devices, a small amount of GSAP's built-in scrub smoothing
       // (lag in seconds, rather than 1:1 tracking) absorbs the bursty deltas
@@ -55,7 +86,7 @@ export function useScrollScrub({
         // ticker rather than firing per raw scroll event.
         scrub: isMobile ? 0.35 : true,
         onUpdate: (self) => {
-          if (!videoEl.duration) return;
+          if (!bufferedEnough || !videoEl.duration) return;
           const targetTime = self.progress * videoEl.duration;
           // Skip the seek if the target frame hasn't meaningfully changed
           // since the last tick — avoids redundant no-op seeks.
@@ -64,6 +95,14 @@ export function useScrollScrub({
           }
           onProgress?.(self.progress);
         },
+      });
+
+      // The video's metadata is ready by now (setup waits for loadeddata), so
+      // re-measure every trigger against the settled layout; again once web
+      // fonts are in, since late font swaps can shift positions.
+      ScrollTrigger.refresh();
+      void document.fonts?.ready.then(() => {
+        if (!cancelled) ScrollTrigger.refresh();
       });
     };
 
@@ -100,8 +139,10 @@ export function useScrollScrub({
 
     return () => {
       cancelled = true;
+      window.clearTimeout(readyTimeout);
       videoEl.removeEventListener("loadeddata", setup);
+      videoEl.removeEventListener("canplaythrough", markReady);
       scrollTrigger?.kill();
     };
-  }, [trigger, video, start, end, pin, onProgress]);
+  }, [trigger, video, start, end, pin, onProgress, enabled]);
 }

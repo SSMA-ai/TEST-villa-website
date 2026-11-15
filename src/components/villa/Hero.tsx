@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { useScrollScrub } from "@/hooks/useScrollScrub";
+import { useSiteLoader } from "./SiteLoader";
 
 const HERO_STAGES: {
   heading: string;
@@ -65,7 +66,25 @@ export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
 
-  useScrollScrub({ trigger: sectionRef, video: videoRef, onProgress: setProgress });
+  // The preloader streams the video into memory and hands over a blob URL, so
+  // every currentTime seek below is served from RAM rather than the network.
+  const { heroSrc, ready, notifyVideoReady } = useSiteLoader();
+
+  // The scroll trigger is only created once the preloader has fully exited and
+  // scroll is unlocked, so the pin/scrub measurements are correct.
+  useScrollScrub({ trigger: sectionRef, video: videoRef, onProgress: setProgress, enabled: ready });
+
+  // Some mobile browsers hold back video data until playback has been
+  // initiated at least once; a muted play()-then-pause() lets the source load
+  // (and fire loadeddata) while the preloader is still up.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!heroSrc || !video) return;
+    const played = video.play();
+    if (played && typeof played.then === "function") {
+      played.then(() => video.pause(), () => {});
+    }
+  }, [heroSrc]);
 
   return (
     <section
@@ -91,10 +110,13 @@ export function Hero() {
       >
         <video
           ref={videoRef}
+          src={heroSrc}
           muted
           playsInline
           preload="auto"
           poster="/images/hero-poster.jpg"
+          onLoadedData={notifyVideoReady}
+          onCanPlayThrough={notifyVideoReady}
           style={{
             position: "absolute",
             inset: 0,
@@ -103,10 +125,7 @@ export function Hero() {
             objectFit: "cover",
             backgroundColor: "#2E2B26",
           }}
-        >
-          <source src="/videos/hero-full-mobile.mp4" media="(max-width: 767px)" />
-          <source src="/videos/hero-full.mp4" />
-        </video>
+        />
         <div
           style={{
             position: "absolute",
