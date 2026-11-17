@@ -2,7 +2,10 @@
 
 import { useEffect } from "react";
 import type { RefObject } from "react";
-import { ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+/** Same breakpoint the CSS layout and the video-source choice use. */
+const MOBILE_QUERY = "(max-width: 767px)";
 
 type UseScrollScrubOptions = {
   trigger: RefObject<HTMLElement | null>;
@@ -13,7 +16,10 @@ type UseScrollScrubOptions = {
   end?: string;
   /** Whether GSAP should pin `trigger` itself (leave false if it's already CSS `position: sticky`). */
   pin?: boolean;
-  /** Called with 0-1 scroll progress through the trigger on the same rAF-batched tick as the video seek. */
+  /**
+   * Called with 0-1 progress (smoothed, when `smoothing` is set) on the same
+   * rAF-batched tick as the video seek.
+   */
   onProgress?: (progress: number) => void;
   /**
    * Hold off creating the ScrollTrigger until true (e.g. while a preloader
@@ -21,6 +27,16 @@ type UseScrollScrubOptions = {
    * final, unlocked layout. Defaults to true.
    */
   enabled?: boolean;
+  /**
+   * Seconds of catch-up lag between scroll and video (a number, or one per
+   * viewport class). GSAP only smooths a scrub that drives an *animation*, so
+   * when this is set progress comes from a proxy tween linked to the
+   * ScrollTrigger and everything downstream uses that smoothed value. Leave
+   * unset for 1:1 tracking.
+   */
+  smoothing?: number | { desktop: number; mobile: number };
+  /** Maps (smoothed) progress to a 0-1 position in the video. Defaults to identity. */
+  mapProgress?: (progress: number) => number;
 };
 
 export function useScrollScrub({
@@ -31,7 +47,13 @@ export function useScrollScrub({
   pin = false,
   onProgress,
   enabled = true,
+  smoothing,
+  mapProgress,
 }: UseScrollScrubOptions) {
+  // Primitives, so an inline `{desktop, mobile}` object can't re-run the effect.
+  const smoothDesktop = typeof smoothing === "object" ? smoothing.desktop : smoothing;
+  const smoothMobile = typeof smoothing === "object" ? smoothing.mobile : smoothing;
+
   useEffect(() => {
     if (!enabled) return;
     const triggerEl = trigger.current;
@@ -39,6 +61,7 @@ export function useScrollScrub({
     if (!triggerEl || !videoEl) return;
 
     let scrollTrigger: ScrollTrigger | undefined;
+    let proxyTween: gsap.core.Tween | undefined;
     let cancelled = false;
     // Pin/layout engage on schedule regardless, but actual seeking is held
     // off until the browser thinks it can play through without further
@@ -72,30 +95,43 @@ export function useScrollScrub({
         readyTimeout = window.setTimeout(markReady, 6000);
       }
 
-      // On touch devices, a small amount of GSAP's built-in scrub smoothing
-      // (lag in seconds, rather than 1:1 tracking) absorbs the bursty deltas
-      // touch-momentum scrolling produces, instead of snapping to every one.
-      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const apply = (progress: number) => {
+        if (!bufferedEnough || !videoEl.duration) return;
+        const fraction = mapProgress ? mapProgress(progress) : progress;
+        const targetTime = fraction * videoEl.duration;
+        // Skip the seek if the target frame hasn't meaningfully changed
+        // since the last tick — avoids redundant no-op seeks.
+        if (Math.abs(videoEl.currentTime - targetTime) > 1 / 48) {
+          videoEl.currentTime = targetTime;
+        }
+        onProgress?.(progress);
+      };
 
-      scrollTrigger = ScrollTrigger.create({
-        trigger: triggerEl,
-        start,
-        end,
-        pin,
-        // scrub batches onUpdate through GSAP's own requestAnimationFrame
-        // ticker rather than firing per raw scroll event.
-        scrub: isMobile ? 0.35 : true,
-        onUpdate: (self) => {
-          if (!bufferedEnough || !videoEl.duration) return;
-          const targetTime = self.progress * videoEl.duration;
-          // Skip the seek if the target frame hasn't meaningfully changed
-          // since the last tick — avoids redundant no-op seeks.
-          if (Math.abs(videoEl.currentTime - targetTime) > 1 / 48) {
-            videoEl.currentTime = targetTime;
-          }
-          onProgress?.(self.progress);
-        },
-      });
+      const smooth = window.matchMedia(MOBILE_QUERY).matches ? smoothMobile : smoothDesktop;
+
+      if (smooth) {
+        // Damped path: a numeric `scrub` only smooths an attached animation,
+        // so tween a proxy 0 -> 1 (linear) under the ScrollTrigger and read
+        // the eased value from it. scrub batches updates through GSAP's own
+        // requestAnimationFrame ticker rather than raw scroll events.
+        const proxy = { p: 0 };
+        proxyTween = gsap.to(proxy, {
+          p: 1,
+          ease: "none",
+          onUpdate: () => apply(proxy.p),
+          scrollTrigger: { trigger: triggerEl, start, end, pin, scrub: smooth },
+        });
+        scrollTrigger = proxyTween.scrollTrigger;
+      } else {
+        scrollTrigger = ScrollTrigger.create({
+          trigger: triggerEl,
+          start,
+          end,
+          pin,
+          scrub: true, // 1:1 with the scrollbar
+          onUpdate: (self) => apply(self.progress),
+        });
+      }
 
       // The video's metadata is ready by now (setup waits for loadeddata), so
       // re-measure every trigger against the settled layout; again once web
@@ -142,7 +178,19 @@ export function useScrollScrub({
       window.clearTimeout(readyTimeout);
       videoEl.removeEventListener("loadeddata", setup);
       videoEl.removeEventListener("canplaythrough", markReady);
+      proxyTween?.kill();
       scrollTrigger?.kill();
     };
-  }, [trigger, video, start, end, pin, onProgress, enabled]);
+  }, [
+    trigger,
+    video,
+    start,
+    end,
+    pin,
+    onProgress,
+    enabled,
+    smoothDesktop,
+    smoothMobile,
+    mapProgress,
+  ]);
 }

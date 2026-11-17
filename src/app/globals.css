@@ -133,8 +133,61 @@ a.directions-link:hover {
 }
 
 /* Hero */
+/* The scroll length is set in HERO_CONFIG (heroTimeline.ts), which passes it in
+   through these variables; the fallbacks only apply if that is ever missing. */
 .hero-pin-section {
-  height: 300vh;
+  height: var(--hero-scroll-desktop, 800vh);
+}
+/* Chapter indicator: thin line on the left edge, labels beside it. */
+.hero-chapters {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: min(34vh, 280px);
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+}
+.hero-chapters-track {
+  position: relative;
+  width: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.22);
+}
+.hero-chapters-fill {
+  position: absolute;
+  inset: 0;
+  background: #f7f4ef;
+  transform: scaleY(0);
+  transform-origin: top center;
+  will-change: transform;
+}
+.hero-chapters-tick {
+  position: absolute;
+  left: -2px;
+  width: 5px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.hero-chapters-labels {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.hero-chapter-label {
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+  writing-mode: vertical-rl;
+  font-size: 8.5px;
+  letter-spacing: 0.34em;
+  color: rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  transition: color 400ms ease;
+}
+.hero-chapter-label[data-active="true"] {
+  color: #ffffff;
 }
 .hero-cta-row {
   flex-direction: row;
@@ -144,7 +197,14 @@ a.directions-link:hover {
 }
 @media (max-width: 767px) {
   .hero-pin-section {
-    height: 220vh;
+    height: var(--hero-scroll-mobile, 600vh);
+  }
+  .hero-chapters {
+    left: 10px;
+    height: min(28vh, 220px);
+  }
+  .hero-chapters-labels {
+    display: none;
   }
   .hero-cta-row {
     flex-direction: column;
