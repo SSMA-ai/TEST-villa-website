@@ -240,9 +240,6 @@ a.directions-link:hover {
 .amenities-section {
   padding: 140px 48px 120px;
 }
-.gallery-section {
-  padding: 130px 48px;
-}
 .booking-section {
   padding: 140px 48px;
 }
@@ -252,7 +249,6 @@ a.directions-link:hover {
 @media (max-width: 767px) {
   .about-section,
   .amenities-section,
-  .gallery-section,
   .booking-section {
     padding: 96px 24px 72px;
   }
@@ -299,11 +295,6 @@ a.directions-link:hover {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
-}
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
 }
 .booking-grid {
   display: grid;
@@ -355,9 +346,6 @@ a.directions-link:hover {
   }
   .amenities-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .gallery-grid {
-    grid-template-columns: 1fr;
   }
   .footer-bottom {
     flex-direction: column;
@@ -455,5 +443,202 @@ a.directions-link:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* About: scroll-filled paragraph. Words start dim; GSAP lights them up as the
+   section scrolls through. Full opacity without JS (see layout.tsx) and when
+   the visitor prefers reduced motion. */
+.scroll-fill-word {
+  opacity: 0.2;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-fill-word {
+    opacity: 1;
+  }
+}
+
+/* Gallery. Base = shared look; the three modes below set the layout:
+   desktop pinned horizontal scroll / mobile swipe carousel / reduced-motion grid. */
+.hgallery {
+  --hg-pad: max(48px, calc((100vw - 1320px) / 2 + 48px));
+  position: relative;
+  background: #efeae1;
+}
+.hgallery-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 0 var(--hg-pad);
+}
+.hgallery-counter {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: #6b6459;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hgallery-counter span {
+  color: #1c1a17;
+}
+.hgallery-item {
+  position: relative;
+  margin: 0;
+}
+.hgallery-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e3dacb;
+}
+.hgallery-parallax {
+  position: absolute;
+  inset: 0;
+}
+.hgallery-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20, 19, 16, 0) 60%, rgba(20, 19, 16, 0.55) 100%);
+}
+.hgallery-caption {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: #f7f4ef;
+}
+.hgallery-progress {
+  position: relative;
+  height: 1px;
+  background: #e3d9c6;
+  overflow: hidden;
+  margin: 0 var(--hg-pad);
+}
+.hgallery-progress-fill {
+  width: 100%;
+  height: 100%;
+  background: #a98a54;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* Desktop: pinned horizontal scroll. The section is exactly one viewport tall
+   and clips the track, so the page itself never overflows sideways. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .hgallery {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(24px, 5vh, 56px);
+  }
+  .hgallery-track {
+    display: flex;
+    gap: 36px;
+    width: max-content;
+    padding: 0 var(--hg-pad);
+    will-change: transform;
+  }
+  .hgallery-item {
+    flex: 0 0 auto;
+    height: clamp(240px, 46vh, 520px);
+    aspect-ratio: 3 / 2;
+  }
+  /* Wider than the frame so the parallax shift never exposes an edge. */
+  .hgallery-parallax {
+    inset: 0 -8%;
+  }
+}
+
+/* Mobile: no pinning; a native swipe carousel with scroll-snap. */
+@media (max-width: 767px) {
+  .hgallery {
+    --hg-pad: 24px;
+    padding: 96px 0 72px;
+  }
+  .hgallery-head {
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  /* Let the heading shrink and wrap so the counter stays inside the screen. */
+  .hgallery-head > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .hgallery-counter {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .hgallery-track {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0 var(--hg-pad);
+    scroll-padding: 0 var(--hg-pad);
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .hgallery-track::-webkit-scrollbar {
+    display: none;
+  }
+  .hgallery-item {
+    flex: 0 0 84vw;
+    aspect-ratio: 4 / 3;
+    scroll-snap-align: start;
+  }
+  .hgallery-progress {
+    margin-top: 22px;
+  }
+}
+
+/* Reduced motion (any width): a plain static grid, nothing animated. */
+@media (prefers-reduced-motion: reduce) {
+  .hgallery {
+    height: auto;
+    overflow: visible;
+    display: block;
+    padding: 130px 0;
+  }
+  .hgallery-head {
+    margin-bottom: 52px;
+  }
+  .hgallery-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    width: auto;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding: 0 var(--hg-pad);
+  }
+  .hgallery-item {
+    flex: none;
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+  .hgallery-parallax {
+    inset: 0;
+  }
+  .hgallery-counter,
+  .hgallery-progress {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+  .hgallery {
+    padding: 96px 0 72px;
+  }
+  .hgallery-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .hgallery-item {
+    aspect-ratio: 4 / 3;
   }
 }

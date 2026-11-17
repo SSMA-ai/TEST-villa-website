@@ -4,6 +4,7 @@ import { StatsBar } from "@/components/villa/StatsBar";
 import { About } from "@/components/villa/About";
 import { RoomFeature } from "@/components/villa/RoomFeature";
 import { Amenities } from "@/components/villa/Amenities";
+import { Gallery } from "@/components/villa/Gallery";
 import { Booking } from "@/components/villa/Booking";
 import { Footer } from "@/components/villa/Footer";
 import { SiteLoader } from "@/components/villa/SiteLoader";
@@ -37,6 +38,7 @@ export default function Home() {
           tags={["HAMMAM + SAUNA", "6 ENSUITES"]}
         />
         <Amenities />
+        <Gallery />
         <Booking />
         <Footer />
       </div>

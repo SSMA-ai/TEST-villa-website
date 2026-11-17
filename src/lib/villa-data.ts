@@ -16,12 +16,18 @@ export const amenities = [
   { title: "Tender & mooring", body: "Berth for 12m at Cap Ferrat", radius: "50%", rotate: "45deg" },
 ];
 
-// The design's export listed 6 gallery slots (terrace-dusk.jpg, suite-main.jpg, etc.) that
-// don't exist as real assets. Using the 3 real photos we do have instead of fabricating images.
+// Gallery order: the three original photos, interleaved with six stills pulled from the
+// hero video (public/images/stills/, evenly spread, clear of the crossfades).
 export const gallery = [
-  { label: "EXTERIOR & POOL", file: "/images/exterior.jpg" },
-  { label: "LIVING & KITCHEN", file: "/images/living-kitchen.jpg" },
-  { label: "PRIMARY BATHROOM", file: "/images/bathroom.jpg" },
+  { label: "EXTERIOR & POOL", file: "/images/exterior.jpg", alt: "The villa and infinity pool above the sea at sunset" },
+  { label: "AERIAL AT DUSK", file: "/images/stills/still-01.jpg", alt: "Aerial view of the villa, pool and palms at sunset" },
+  { label: "THE TERRACE", file: "/images/stills/still-02.jpg", alt: "Pool terrace and glazed facade glowing at dusk" },
+  { label: "LIVING & KITCHEN", file: "/images/living-kitchen.jpg", alt: "Open living room and kitchen with sea views" },
+  { label: "LIVING ROOM", file: "/images/stills/still-03.jpg", alt: "Sofa in the living room beside sliding glass doors to the terrace" },
+  { label: "KITCHEN & DINING", file: "/images/stills/still-04.jpg", alt: "Living area looking toward the kitchen and dining table" },
+  { label: "PRIMARY BATHROOM", file: "/images/bathroom.jpg", alt: "Freestanding stone bath facing a sea-view window" },
+  { label: "THE BATHHOUSE", file: "/images/stills/still-05.jpg", alt: "Travertine bath beneath a window onto the sea" },
+  { label: "BRASS & STONE", file: "/images/stills/still-06.jpg", alt: "Stone bath, brass fittings and a stone feature wall" },
 ];
 
 export const navLinks = [

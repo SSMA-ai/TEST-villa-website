@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { ScrollFillText } from "./ScrollFillText";
 
 export function About() {
   return (
@@ -32,11 +33,10 @@ export function About() {
         delayMs={120}
         style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 620 }}
       >
-        <p style={{ margin: 0, fontSize: 17, fontWeight: 300, lineHeight: 1.8, color: "#45403A" }}>
-          Aurora sits on a limestone shelf twelve metres above a private cove. The architecture
-          is deliberately quiet — travertine, oiled oak, linen — so that the water does the
-          talking. Every room opens; nothing is corridor.
-        </p>
+        <ScrollFillText
+          text="Aurora sits on a limestone shelf twelve metres above a private cove. The architecture is deliberately quiet — travertine, oiled oak, linen — so that the water does the talking. Every room opens; nothing is corridor."
+          style={{ margin: 0, fontSize: 17, fontWeight: 300, lineHeight: 1.8, color: "#45403A" }}
+        />
         <p style={{ margin: 0, fontSize: 15, fontWeight: 300, lineHeight: 1.85, color: "#6B6459" }}>
           Stays include a resident housekeeper, daily provisioning, and a chef on request. The
           gate closes behind one party at a time.

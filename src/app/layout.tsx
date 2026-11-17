@@ -26,9 +26,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${playfairDisplay.variable} ${jost.variable}`}>
       <body>
-        {/* Without JS the preloader could never finish, so don't show it. */}
+        {/* Without JS the preloader could never finish and the scroll-fill words
+            would stay dim, so neutralise both. */}
         <noscript>
-          <style>{".preloader{display:none}"}</style>
+          <style>{".preloader{display:none}.scroll-fill-word{opacity:1}"}</style>
         </noscript>
         {children}
       </body>
